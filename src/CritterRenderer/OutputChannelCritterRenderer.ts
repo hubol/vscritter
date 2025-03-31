@@ -23,7 +23,7 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
   render(critter: ICritterState) {
     canvas.clear();
     canvas.draw(0, 0, AsciiArt.CritterFrame);
-    canvas.draw(2, 2, AsciiCritters.Adults[critter.heartbeats % 2], 0xff0000);
+    canvas.draw(2, 2, getTextureSheet(critter)[critter.heartbeats % 2], 0xff0000);
 
     const level = `Level: ${critter.level}`;
     const meter = renderAsciiMeter({ value: critter.experience, valueMaximum: critter.experienceMaximum, width: 24 });
@@ -43,6 +43,17 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
 
   static create(): ICritterRenderer {
     return new OutputChannelCritterRenderer();
+  }
+}
+
+function getTextureSheet(critter: ICritterState) {
+  switch (critter.level) {
+    case 1:
+      return AsciiCritters.Babies;
+    case 2:
+      return AsciiCritters.Children;
+    default:
+      return AsciiCritters.Adults;
   }
 }
 
