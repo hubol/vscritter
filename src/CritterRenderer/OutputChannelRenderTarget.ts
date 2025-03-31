@@ -58,6 +58,11 @@ function findVisibleTextEditorForOutputChannel(name: string) {
 const emptyRanges: vscode.Range[] = [];
 
 function applyDecorationsToTextEditor(editor: vscode.TextEditor, decorations: EditorDecorationsFromColorGrid) {
+  // Looks like you shouldn't clear and then update ranges for decorations
+  // Otherwise you get nasty flickering!
+  // So here we apply the decorations we want
+  // And remove the decorations we do not
+
   for (const [ decorationType, ranges ] of decorations) {
     editor.setDecorations(decorationType, ranges);
   }
