@@ -1,18 +1,21 @@
 export interface ICritterState {
   readonly experience: number
   readonly experienceMaximum: number
+  readonly heartbeats: number
   readonly level: number
   readonly style: number
 }
 
 export interface ISerializedCritterModel {
   experience: number
+  heartbeats: number
   level: number
   style: number
 }
 
 export class CritterModel implements ICritterState {
   experience: number;
+  heartbeats: number;
   get experienceMaximum() {
     return 100 * Math.pow(2, this.level - 1);
   }
@@ -21,6 +24,7 @@ export class CritterModel implements ICritterState {
 
   private constructor(serialized: ISerializedCritterModel) {
     this.experience = serialized.experience;
+    this.heartbeats = serialized.heartbeats;
     this.level = serialized.level;
     this.style = serialized.style;
   }
@@ -46,6 +50,10 @@ export class CritterModel implements ICritterState {
     };
   }
 
+  heartbeat() {
+    this.heartbeats += 1;
+  }
+
   static create(serialized: ISerializedCritterModel): Omit<CritterModel, keyof ICritterState> & ICritterState {
     return new CritterModel(sanitizeModel(serialized));
   }
@@ -53,6 +61,7 @@ export class CritterModel implements ICritterState {
   serialize(): ISerializedCritterModel {
     return {
       experience: this.experience,
+      heartbeats: this.heartbeats,
       level: this.level,
       style: this.style,
     };
@@ -64,6 +73,7 @@ function sanitizeModel(model: ISerializedCritterModel): ISerializedCritterModel 
   // maybe pull in some silly library
   return {
     experience: sanitizeInteger(model.experience, 0),
+    heartbeats: sanitizeInteger(model.heartbeats, 0),
     level: sanitizeInteger(model.level, 0),
     style: sanitizeInteger(model.level, 32), // TODO rng?
   };

@@ -10,7 +10,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const critterRenderer = OutputChannelCritterRenderer.create();
 
-	const model = CritterModel.create({ experience: 0, level: 1, style: 32 });
+	const model = CritterModel.create({ experience: 0, heartbeats: 0, level: 1, style: 32 });
+
+	// Not sure where to put this
+	setInterval(() => {
+		model.heartbeat();
+		critterRenderer.render(model);
+	}, 1000);
 
 	// TODO layer pls
 	vscode.workspace.onDidChangeTextDocument((e) => {
