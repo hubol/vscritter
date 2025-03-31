@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { ICritterRenderer } from './ICritterRenderer';
 import { ICritterState } from './CritterModel';
+import { AsciiColumns } from '../Ascii/AsciiColumns';
+import { AsciiCritters } from '../Ascii/AsciiCritters';
 
 export class OutputChannelCritterRenderer implements ICritterRenderer {
   private readonly _outputChannel: vscode.OutputChannel;
@@ -10,8 +12,13 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
   }
 
   render(command: ICritterState) {
-    this._outputChannel.replace(`Level: ${command.level}
-XP: ${command.experience} / ${command.experienceMaximum}`);
+    const infoText = `
+
+
+Level: ${command.level}
+XP: ${command.experience} / ${command.experienceMaximum}`;
+    const text = AsciiColumns.layout(3, AsciiCritters.Babies[0], infoText);
+    this._outputChannel.replace(text);
   }
 
   dispose() {
