@@ -7,16 +7,17 @@ import { renderAsciiMeter } from '../Ascii/renderAsciiMeter';
 import { AsciiCanvas } from '../Ascii/AsciiCanvas';
 import { renderAsciiBox } from '../Ascii/renderAsciiBox';
 import { getAllDecorationTypes } from '../Ascii/convertColorGridToEditorDecorations';
+import { OutputChannelRenderTarget } from './OutputChannelRenderTarget';
 
 const canvas = AsciiCanvas.create({ width: 100, height: 20 });
 
 const empty: vscode.Range[] = [];
 
 export class OutputChannelCritterRenderer implements ICritterRenderer {
-  private readonly _outputChannel: vscode.OutputChannel;
+  private readonly _renderTarget: OutputChannelRenderTarget;
 
   private constructor() {
-    this._outputChannel = vscode.window.createOutputChannel('vscritter');
+    this._renderTarget = new OutputChannelRenderTarget("vscritter");
   }
 
   render(critter: ICritterState) {
@@ -32,22 +33,12 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
     canvas.draw(32, 7, meter, getXpMeterColor(critter));
     canvas.draw(56 - xp.length, 8, xp);
 
-    const { text, decorations } = canvas.render();
-    this._outputChannel.replace(text);
-
-    const textEditor = vscode.window.visibleTextEditors.find(editor => editor?.document?.fileName.includes('vscritter') && editor.document.fileName.includes('extension-output'));
-    if (textEditor?.setDecorations) {
-      for (const decorationType of getAllDecorationTypes()) {
-        textEditor.setDecorations(decorationType, empty);
-      }
-      for (const { decorationType, ranges } of decorations) {
-        textEditor.setDecorations(decorationType, ranges);
-      }
-    }
+    const { text, colors } = canvas.render();
+    this._renderTarget.fill(text, colors);
   }
 
   dispose() {
-    this._outputChannel.dispose();
+    this._renderTarget.dispose();
   }
 
   static create(): ICritterRenderer {

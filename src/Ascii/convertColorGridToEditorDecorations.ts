@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
-import { Color } from './AsciiCanvas';
+import { Color, ColorGrid } from './AsciiCanvas';
 
-export function convertColorGridToEditorDecorations(width: number, height: number, colors: Color[][]) {
+export function convertColorGridToEditorDecorations(colors: ColorGrid) {
+  // Kind of awkward...
+  const height = colors.length;
+  const width = colors[0].length;
+
   let currentColor: Color = null;
   let decorationType: vscode.TextEditorDecorationType | null = null;
   let startPosition: vscode.Position | null = null;
@@ -38,8 +42,10 @@ export function convertColorGridToEditorDecorations(width: number, height: numbe
     }
   }
 
-  return [...decorationRanges.entries()].map(([decorationType, ranges]) => ({ decorationType, ranges }));
+  return decorationRanges;
 }
+
+export type EditorDecorationsFromColorGrid = ReturnType<typeof convertColorGridToEditorDecorations>;
 
 function getPosition(x: number, y: number) {
   if (!positionsCache[x]) {
@@ -68,7 +74,6 @@ function toHexColorString(rgbInteger: number) {
   return '#' + hex.substring(6);
 }
 
-// TODO this is a hack!
 export function getAllDecorationTypes() {
   return Object.values(decorationTypesCache);
 }

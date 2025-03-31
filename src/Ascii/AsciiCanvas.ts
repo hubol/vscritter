@@ -14,6 +14,8 @@ interface CreateArgs {
 
 export type Color = number | null
 
+export type ColorGrid = ReadonlyArray<ReadonlyArray<Color>>
+
 export class AsciiCanvas {
   private readonly _commands: DrawCommand[] = [];
 
@@ -68,11 +70,10 @@ export class AsciiCanvas {
 
   render() {
     const text = this._chars.flatMap(row => row.join('')).join('\n');
-    const decorations = convertColorGridToEditorDecorations(this.width, this.height, this._colors);
     
     return {
       text,
-      decorations,
+      colors: this._colors as ColorGrid,
     };
   }
 }
