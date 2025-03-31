@@ -16,16 +16,18 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
     this._outputChannel = vscode.window.createOutputChannel('vscritter');
   }
 
-  render(command: ICritterState) {
+  render(critter: ICritterState) {
     canvas.clear();
     canvas.draw(0, 0, AsciiArt.CritterFrame);
-    canvas.draw(1, 1, AsciiCritters.Adults[0]);
+    canvas.draw(2, 2, AsciiCritters.Adults[0]);
 
-    const information = `Level: ${command.level}`
-      + '\n' + renderAsciiMeter({ value: command.experience, valueMaximum: command.experienceMaximum, width: 24 })
-      + '\n' + `XP: ${command.experience} / ${command.experienceMaximum}`;
+    const information = `Level: ${critter.level}`
+      + '\n' + renderAsciiMeter({ value: critter.experience, valueMaximum: critter.experienceMaximum, width: 24 });
 
-    canvas.draw(30, 6, information);
+    const xp = `XP: ${critter.experience} / ${critter.experienceMaximum}`;
+
+    canvas.draw(32, 6, information);
+    canvas.draw(56 - xp.length, 8, xp);
 
     const text = canvas.render();
     this._outputChannel.replace(text);
@@ -41,5 +43,5 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
 }
 
 const AsciiArt = {
-  CritterFrame: renderAsciiBox(26, 18),
+  CritterFrame: renderAsciiBox(28, 20),
 };
