@@ -10,11 +10,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const critterRenderer = OutputChannelCritterRenderer.create();
 
-	// const disposable = vscode.commands.registerCommand('vscritter.helloWorld', () => {
-	// 	vscode.window.showInformationMessage('Hello World from vscritter!');
-	// });
-
 	const model = CritterModel.create({ experience: 0, level: 1, style: 32 });
+
+	// TODO layer pls
+	vscode.workspace.onDidChangeTextDocument((e) => {
+		if (vscode.window.activeTextEditor && e.document === vscode.window.activeTextEditor.document) {
+				model.gainExperience(1);
+				critterRenderer.render(model);
+		}
+	});
 
 	critterRenderer.render(model);
 

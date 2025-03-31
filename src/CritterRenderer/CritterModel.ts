@@ -25,7 +25,28 @@ export class CritterModel implements ICritterState {
     this.style = serialized.style;
   }
 
-  static create(serialized: ISerializedCritterModel) {
+  gainExperience(amount: number) {
+    // TODO better validation
+    // Or use some type library
+    if (!Number.isInteger(amount)) {
+      throw new Error('CritterModel.gainExperience must be passed an integer!');
+    }
+
+    let levelsIncreased = 0;
+
+    this.experience += amount;
+    while (this.experience >= this.experienceMaximum) {
+      this.experience -= this.experienceMaximum;
+      this.level += 1;
+      levelsIncreased += 1;
+    }
+
+    return {
+      levelsIncreased,
+    };
+  }
+
+  static create(serialized: ISerializedCritterModel): Omit<CritterModel, keyof ICritterState> & ICritterState {
     return new CritterModel(sanitizeModel(serialized));
   }
 
