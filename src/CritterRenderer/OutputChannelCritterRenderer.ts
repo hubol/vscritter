@@ -4,7 +4,7 @@ import { ICritterState } from './CritterModel';
 import { AsciiColumns } from '../Ascii/AsciiColumns';
 import { AsciiCritters } from '../Ascii/AsciiCritters';
 import { renderAsciiMeter } from '../Ascii/renderAsciiMeter';
-import { AsciiCanvas } from '../Ascii/AsciiContent';
+import { AsciiCanvas } from '../Ascii/AsciiCanvas';
 import { renderAsciiBox } from '../Ascii/renderAsciiBox';
 
 const canvas = AsciiCanvas.create({ width: 100, height: 20 });

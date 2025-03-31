@@ -1,4 +1,4 @@
-import { AsciiCanvas } from './AsciiContent';
+import { AsciiCanvas } from './AsciiCanvas';
 
 export function renderAsciiBox(width: number, height: number) {
   const canvas = AsciiCanvas.create({ width, height });
