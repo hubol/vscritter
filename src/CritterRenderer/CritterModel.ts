@@ -1,4 +1,8 @@
+import { AdjustColor } from '../lib/AdjustColor';
+import { cyclic } from '../lib/cyclic';
+
 export interface ICritterState {
+  readonly color: number
   readonly experience: number
   readonly experienceMaximum: number
   readonly heartbeats: number
@@ -7,6 +11,7 @@ export interface ICritterState {
 }
 
 export interface ISerializedCritterModel {
+  color: number
   experience: number
   heartbeats: number
   level: number
@@ -14,15 +19,17 @@ export interface ISerializedCritterModel {
 }
 
 export class CritterModel implements ICritterState {
+  color: number;
   experience: number;
   heartbeats: number;
   get experienceMaximum() {
-    return 100 * Math.pow(2, this.level - 1);
+    return 20 * Math.pow(2, this.level - 1);
   }
   level: number;
   style: number;
 
   private constructor(serialized: ISerializedCritterModel) {
+    this.color = serialized.color;
     this.experience = serialized.experience;
     this.heartbeats = serialized.heartbeats;
     this.level = serialized.level;
@@ -40,6 +47,10 @@ export class CritterModel implements ICritterState {
 
     this.experience += amount;
     while (this.experience >= this.experienceMaximum) {
+      const { h: previousHue } = AdjustColor.pixi(this.color).toHsv();
+      const sign = Math.random() > 0.5 ? 1 : -1;
+      const nextHue = cyclic(previousHue + (40 + Math.random() * 40) * sign, 0, 360);
+      this.color = AdjustColor.hsv(nextHue, 70 + Math.random() * 30, 70 + Math.random() * 30).toPixi();
       this.experience -= this.experienceMaximum;
       this.level += 1;
       levelsIncreased += 1;
@@ -60,6 +71,7 @@ export class CritterModel implements ICritterState {
 
   serialize(): ISerializedCritterModel {
     return {
+      color: this.color,
       experience: this.experience,
       heartbeats: this.heartbeats,
       level: this.level,
@@ -72,6 +84,7 @@ function sanitizeModel(model: ISerializedCritterModel): ISerializedCritterModel 
   // TODO log warnings
   // maybe pull in some silly library
   return {
+    color: sanitizeInteger(model.color, 0xff0000),
     experience: sanitizeInteger(model.experience, 0),
     heartbeats: sanitizeInteger(model.heartbeats, 0),
     level: sanitizeInteger(model.level, 0),
