@@ -23,7 +23,7 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
   render(critter: ICritterState) {
     canvas.clear();
     canvas.draw(0, 0, AsciiArt.CritterFrame);
-    canvas.draw(2, 2, AsciiCritters.Adults[0], 0xff0000);
+    canvas.draw(2, 2, AsciiCritters.Adults[critter.heartbeats % 2], 0xff0000);
 
     const level = `Level: ${critter.level}`;
     const meter = renderAsciiMeter({ value: critter.experience, valueMaximum: critter.experienceMaximum, width: 24 });
