@@ -14,7 +14,7 @@ export interface ISerializedCritterModel {
 export class CritterModel implements ICritterState {
   experience: number;
   get experienceMaximum() {
-    return Math.pow(10, this.level);
+    return 100 * Math.pow(2, this.level - 1);
   }
   level: number;
   style: number;
