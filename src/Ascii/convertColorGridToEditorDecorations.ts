@@ -67,3 +67,8 @@ function toHexColorString(rgbInteger: number) {
   const hex = '000000' + rgbInteger.toString(16);
   return '#' + hex.substring(6);
 }
+
+// TODO this is a hack!
+export function getAllDecorationTypes() {
+  return Object.values(decorationTypesCache);
+}
