@@ -1,4 +1,5 @@
 import { repeat } from '../lib/repeat';
+import { convertColorGridToEditorDecorations } from './convertColorGridToEditorDecorations';
 
 interface DrawCommand {
   x: number;
@@ -11,6 +12,8 @@ interface CreateArgs {
   height: number;
 }
 
+export type Color = number | null
+
 export class AsciiCanvas {
   private readonly _commands: DrawCommand[] = [];
 
@@ -18,11 +21,13 @@ export class AsciiCanvas {
   readonly height: number;
 
   private readonly _chars: string[][];
+  private readonly _colors: Color[][];
 
   private constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
     this._chars = [...new Array(this.height)].map(() => [...new Array<string>(this.width)]);
+    this._colors = [...new Array(this.height)].map(() => [...new Array<number>(this.width)]);
     this.clear();
   }
 
@@ -35,11 +40,12 @@ export class AsciiCanvas {
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
         this._chars[y][x] = ' ';
+        this._colors[y][x] = null;
       }
     }
   }
 
-  draw(x: number, y: number, text: string) {
+  draw(x: number, y: number, text: string, color: Color = null) {
     let xStart = x;
 
     for (let i = 0; i < text.length; i++) {
@@ -50,6 +56,7 @@ export class AsciiCanvas {
       }
       else if (char !== '\r' && x < this.width) {
         this._chars[y][x] = char;
+        this._colors[y][x] = color;
         x += 1;
       }
 
@@ -60,6 +67,12 @@ export class AsciiCanvas {
   }
 
   render() {
-    return this._chars.flatMap(row => row.join('')).join('\n');
+    const text = this._chars.flatMap(row => row.join('')).join('\n');
+    const decorations = convertColorGridToEditorDecorations(this.width, this.height, this._colors);
+    
+    return {
+      text,
+      decorations,
+    };
   }
 }
