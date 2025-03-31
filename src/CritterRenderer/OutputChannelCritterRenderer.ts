@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { ICritterRenderer, RenderCommand } from './ICritterRenderer';
+import { ICritterRenderer } from './ICritterRenderer';
+import { ICritterState } from './CritterModel';
 
 export class OutputChannelCritterRenderer implements ICritterRenderer {
   private readonly _outputChannel: vscode.OutputChannel;
@@ -8,7 +9,7 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
     this._outputChannel = vscode.window.createOutputChannel('vscritter');
   }
 
-  render(command: RenderCommand) {
+  render(command: ICritterState) {
     this._outputChannel.replace(`Level: ${command.level}
 XP: ${command.experience} / ${command.experienceMaximum}`);
   }

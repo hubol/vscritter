@@ -1,12 +1,6 @@
 import { Disposable } from 'vscode';
-
-export interface RenderCommand {
-  experience: number
-  experienceMaximum: number
-  level: number
-  style: number
-}
+import { ICritterState } from './CritterModel';
 
 export interface ICritterRenderer extends Disposable {
-  render(command: RenderCommand): void
+  render(state: ICritterState): void
 }
