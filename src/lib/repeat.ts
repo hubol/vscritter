@@ -1,8 +1,8 @@
 export function repeat(text: string, length: number) {
-  let result = '';
-  while (result.length < length) {
-    result += text;
-  }
+    let result = "";
+    while (result.length < length) {
+        result += text;
+    }
 
-  return result;
+    return result;
 }

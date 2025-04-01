@@ -1,29 +1,29 @@
-import { repeat } from '../lib/repeat';
+import { repeat } from "../lib/repeat";
 
 interface RenderAsciiMeterArgs {
-  value: number
-  valueMaximum: number
-  width: number
+    value: number;
+    valueMaximum: number;
+    width: number;
 }
 
-const partialColumn = [ '▒', '▓' ];
+const partialColumn = ["▒", "▓"];
 
 export function renderAsciiMeter({ value, valueMaximum, width }: RenderAsciiMeterArgs) {
-  const valuePerColumn = valueMaximum / width;
+    const valuePerColumn = valueMaximum / width;
 
-  let result = '';
+    let result = "";
 
-  while (value > 0) {
-    if (value >= valuePerColumn) {
-      result += '█';
-      value -= valuePerColumn;
+    while (value > 0) {
+        if (value >= valuePerColumn) {
+            result += "█";
+            value -= valuePerColumn;
+        }
+        else {
+            const index = Math.floor(value / valuePerColumn * partialColumn.length);
+            result += partialColumn[index];
+            break;
+        }
     }
-    else {
-      const index = Math.floor(value / valuePerColumn * partialColumn.length);
-      result += partialColumn[index];
-      break;
-    }
-  }
 
-  return result + repeat('░', width - result.length);
+    return result + repeat("░", width - result.length);
 }
