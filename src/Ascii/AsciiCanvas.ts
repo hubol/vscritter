@@ -33,6 +33,8 @@ export class AsciiCanvas {
         this.clear();
     }
 
+    static readonly Empty = "`";
+
     static create(args: CreateArgs): AsciiCanvas {
         // TODO assert positive ints!
         return new AsciiCanvas(args.width, args.height);
@@ -57,8 +59,10 @@ export class AsciiCanvas {
                 y += 1;
             }
             else if (char !== "\r" && x < this.width) {
-                this._chars[y][x] = char;
-                this._colors[y][x] = color;
+                if (char !== AsciiCanvas.Empty) {
+                    this._chars[y][x] = char;
+                    this._colors[y][x] = color;
+                }
                 x += 1;
             }
 

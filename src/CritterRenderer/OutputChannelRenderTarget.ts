@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 
 export class OutputChannelRenderTarget implements vscode.Disposable {
     private readonly _outputChannel: vscode.OutputChannel;
+    private _textToCompareOnInterval: string | null = null;
     private _decorationsToApplyOnInterval: EditorDecorationsFromColorGrid | null = null;
     private _applyDecorationsIntervalTimeout: NodeJS.Timeout | null = null;
 
@@ -18,14 +19,7 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         this._outputChannel.replace(text);
 
         const decorations = convertColorGridToEditorDecorations(colors);
-        const textEditor = findVisibleTextEditorForOutputChannel(this.name);
-
-        if (textEditor) {
-            applyDecorationsToTextEditor(textEditor, decorations);
-            return;
-        }
-
-        // Try to apply the decorations ASAP if we couldn't do it now
+        this._textToCompareOnInterval = text;
         this._decorationsToApplyOnInterval = decorations;
 
         if (this._applyDecorationsIntervalTimeout) {
@@ -35,8 +29,9 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         this._applyDecorationsIntervalTimeout = setInterval(() => {
             const textEditor = findVisibleTextEditorForOutputChannel(this.name);
             // Looks like you can sometimes get a textEditor that hasn't received the text yet... Interesting
-            if (textEditor && textEditor.document.getText() === text) {
+            if (textEditor && textEditor.document.getText() === this._textToCompareOnInterval) {
                 clearInterval(this._applyDecorationsIntervalTimeout!);
+                this._applyDecorationsIntervalTimeout = null;
                 applyDecorationsToTextEditor(textEditor, this._decorationsToApplyOnInterval!);
             }
         });
@@ -44,8 +39,10 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
 
     dispose() {
         this._outputChannel.dispose();
+        // TODO interval that implements disposable!
         if (this._applyDecorationsIntervalTimeout) {
             clearInterval(this._applyDecorationsIntervalTimeout);
+            this._applyDecorationsIntervalTimeout = null;
         }
     }
 }
