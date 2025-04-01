@@ -91,5 +91,5 @@ function getXpMeterColor(critter: ICritterState) {
 }
 
 const AsciiArt = {
-    CritterFrame: renderAsciiBox(80, 20, AsciiCanvas.Empty),
+    CritterFrame: renderAsciiBox(80, 20, AsciiCanvas.Transparent),
 };

@@ -109,7 +109,7 @@ ______▗██▘____▝██▖______`,
 ];
 
 export const AsciiCritters = {
-    Babies: Babies.map(text => text.replaceAll("_", AsciiCanvas.Empty)),
-    Children: Children.map(text => text.replaceAll("_", AsciiCanvas.Empty)),
-    Adults: Adults.map(text => text.replaceAll("_", AsciiCanvas.Empty)),
+    Babies: Babies.map(text => text.replaceAll("_", AsciiCanvas.Transparent)),
+    Children: Children.map(text => text.replaceAll("_", AsciiCanvas.Transparent)),
+    Adults: Adults.map(text => text.replaceAll("_", AsciiCanvas.Transparent)),
 };
