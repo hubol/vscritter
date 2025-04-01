@@ -15,14 +15,18 @@
 }`
   document.head.append(styleElement)
 
+  function updateTableCellElementDatasetMute(el) {
+    if (el.textContent === '_') {
+      el.dataset.mute = true
+    } else {
+      delete el.dataset.mute
+    }
+  }
+
   new MutationObserver((records) => {
     for (const { target } of records) {
       if (target instanceof HTMLTableCellElement) {
-        if (target.textContent === '_') {
-          target.dataset.mute = true
-        } else {
-          delete target.dataset.mute
-        }
+        updateTableCellElementDatasetMute(target)
       }
     }
   }).observe(document.getElementById('asciicanvas'), {
@@ -30,4 +34,10 @@
     subtree: true,
     characterData: true,
   })
+
+  const modal_windowOld = modal_window;
+  modal_window = function (...args) {
+    modal_windowOld(...args);
+    document.querySelectorAll('#asciicanvas td').forEach(updateTableCellElementDatasetMute);
+  }
 })()
