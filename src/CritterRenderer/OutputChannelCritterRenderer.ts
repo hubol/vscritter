@@ -5,6 +5,7 @@ import { renderAsciiMeter } from "@/Ascii/renderAsciiMeter";
 import { ICritterState } from "@/CritterRenderer/CritterModel";
 import { ICritterRenderer } from "@/CritterRenderer/ICritterRenderer";
 import { OutputChannelRenderTarget } from "@/CritterRenderer/OutputChannelRenderTarget";
+import { repeat } from "@/lib/repeat";
 import * as vscode from "vscode";
 
 const canvas = AsciiCanvas.create({ width: 100, height: 20 });
@@ -20,8 +21,21 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
 
     render(critter: ICritterState) {
         canvas.clear();
+
+        {
+            const x = Math.round(Math.sin(critter.heartbeats * (Math.PI / 8)) * 4);
+            const texture = getTextureSheet(critter)[critter.heartbeats % 2];
+            canvas.draw(x + 7, 16, repeat("░", 15 - critter.heartbeats % 3));
+            canvas.draw(x + 6, 17, repeat("░", 16 + critter.heartbeats % 2));
+            canvas.draw(x + 7, 18, repeat("░", 12));
+            canvas.erase(x + 1, 2, texture);
+            canvas.erase(x + 3, 2, texture);
+            canvas.erase(x + 2, 1, texture);
+            canvas.erase(x + 2, 3, texture);
+            canvas.draw(x + 2, 2, texture, critter.color);
+        }
+
         canvas.draw(0, 0, AsciiArt.CritterFrame);
-        canvas.draw(2, 2, getTextureSheet(critter)[critter.heartbeats % 2], critter.color);
 
         const level = `Level: ${critter.level}`;
         const meter = renderAsciiMeter({
@@ -31,9 +45,9 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
         });
         const xp = `XP: ${critter.experience} / ${critter.experienceMaximum}`;
 
-        canvas.draw(32, 6, level);
-        canvas.draw(32, 7, meter, getXpMeterColor(critter));
-        canvas.draw(56 - xp.length, 8, xp);
+        canvas.draw(38, 3, level);
+        canvas.draw(38, 4, meter, getXpMeterColor(critter));
+        canvas.draw(62 - xp.length, 5, xp);
 
         const { text, colors } = canvas.render();
         this._renderTarget.fill(text, colors);
@@ -77,5 +91,5 @@ function getXpMeterColor(critter: ICritterState) {
 }
 
 const AsciiArt = {
-    CritterFrame: renderAsciiBox(28, 20, "░").text,
+    CritterFrame: renderAsciiBox(80, 20, AsciiCanvas.Empty),
 };

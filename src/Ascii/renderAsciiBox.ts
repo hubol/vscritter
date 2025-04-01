@@ -13,7 +13,7 @@ export function renderAsciiBox(width: number, height: number, fillCharacter: str
         canvas.draw(x, height - 1, "═");
     }
 
-    const fillRow = repeat(fillCharacter, width - 1);
+    const fillRow = repeat("z", width - 1);
 
     for (let y = 1; y < height - 1; y++) {
         canvas.draw(0, y, "║");
@@ -21,5 +21,5 @@ export function renderAsciiBox(width: number, height: number, fillCharacter: str
         canvas.draw(width - 1, y, "║");
     }
 
-    return canvas.render();
+    return canvas.render().text.replaceAll("z", fillCharacter);
 }

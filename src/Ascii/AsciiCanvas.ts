@@ -72,6 +72,28 @@ export class AsciiCanvas {
         }
     }
 
+    erase(x: number, y: number, text: string) {
+        let xStart = x;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text.charAt(i);
+            if (char === "\n") {
+                x = xStart;
+                y += 1;
+            }
+            else if (char !== "\r" && x < this.width) {
+                if (char !== AsciiCanvas.Empty) {
+                    this._chars[y][x] = " ";
+                }
+                x += 1;
+            }
+
+            if (y >= this.height) {
+                break;
+            }
+        }
+    }
+
     render() {
         const text = this._chars.flatMap(row => row.join("")).join("\n");
 
