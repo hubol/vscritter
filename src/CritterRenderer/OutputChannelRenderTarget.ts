@@ -1,18 +1,20 @@
 import { ColorGrid } from "@/Ascii/AsciiCanvas";
 import { convertColorGridToEditorDecorations, EditorDecorationsFromColorGrid, getAllDecorationTypes } from "@/Ascii/convertColorGridToEditorDecorations";
+import { DisposableInterval, DisposableIntervalCallback } from "@/lib/DisposableInterval";
 import * as vscode from "vscode";
 
 export class OutputChannelRenderTarget implements vscode.Disposable {
     private readonly _outputChannel: vscode.OutputChannel;
+    private readonly _applyDecorationsInterval: DisposableInterval;
     private _textToCompareOnInterval: string | null = null;
     private _decorationsToApplyOnInterval: EditorDecorationsFromColorGrid | null = null;
-    private _applyDecorationsIntervalTimeout: NodeJS.Timeout | null = null;
 
     readonly name: string;
 
     constructor(name: string) {
         this._outputChannel = vscode.window.createOutputChannel(name);
         this.name = name;
+        this._applyDecorationsInterval = new DisposableInterval(this._tryToApplyDecorations.bind(this), null);
     }
 
     fill(text: string, colors: ColorGrid) {
@@ -21,30 +23,22 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         const decorations = convertColorGridToEditorDecorations(colors);
         this._textToCompareOnInterval = text;
         this._decorationsToApplyOnInterval = decorations;
-
-        if (this._applyDecorationsIntervalTimeout) {
-            return;
-        }
-
-        this._applyDecorationsIntervalTimeout = setInterval(() => {
-            const textEditor = findVisibleTextEditorForOutputChannel(this.name);
-            // Looks like you can sometimes get a textEditor that hasn't received the text yet... Interesting
-            if (textEditor && textEditor.document.getText() === this._textToCompareOnInterval) {
-                clearInterval(this._applyDecorationsIntervalTimeout!);
-                this._applyDecorationsIntervalTimeout = null;
-                applyDecorationsToTextEditor(textEditor, this._decorationsToApplyOnInterval!);
-            }
-        });
+        this._applyDecorationsInterval.start();
     }
 
     dispose() {
         this._outputChannel.dispose();
-        // TODO interval that implements disposable!
-        if (this._applyDecorationsIntervalTimeout) {
-            clearInterval(this._applyDecorationsIntervalTimeout);
-            this._applyDecorationsIntervalTimeout = null;
-        }
+        this._applyDecorationsInterval.dispose();
     }
+
+    private readonly _tryToApplyDecorations: DisposableIntervalCallback = (clearInterval) => {
+        const textEditor = findVisibleTextEditorForOutputChannel(this.name);
+        // Looks like you can sometimes get a textEditor that hasn't received the text yet... Interesting
+        if (textEditor && textEditor.document.getText() === this._textToCompareOnInterval) {
+            applyDecorationsToTextEditor(textEditor, this._decorationsToApplyOnInterval!);
+            clearInterval();
+        }
+    };
 }
 
 function findVisibleTextEditorForOutputChannel(name: string) {

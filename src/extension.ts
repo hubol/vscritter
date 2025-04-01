@@ -1,6 +1,7 @@
 import { CritterModel } from "@/CritterRenderer/CritterModel";
 import { OutputChannelCritterRenderer } from "@/CritterRenderer/OutputChannelCritterRenderer";
 import { AdjustColor } from "@/lib/AdjustColor";
+import { DisposableInterval } from "@/lib/DisposableInterval";
 import * as vscode from "vscode";
 
 // This method is called when your extension is activated
@@ -16,11 +17,11 @@ export function activate(context: vscode.ExtensionContext) {
         style: 32,
     });
 
-    // Not sure where to put this
-    setInterval(() => {
+    const interval = new DisposableInterval(() => {
         model.heartbeat();
         critterRenderer.render(model);
     }, 1000);
+    interval.start();
 
     // TODO layer pls
     const changeListener = vscode.workspace.onDidChangeTextDocument((e) => {
@@ -32,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     critterRenderer.render(model);
 
-    context.subscriptions.push(critterRenderer, changeListener);
+    context.subscriptions.push(critterRenderer, changeListener, interval);
 }
 
 // This method is called when your extension is deactivated
