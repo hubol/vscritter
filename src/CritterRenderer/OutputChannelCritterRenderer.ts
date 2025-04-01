@@ -6,11 +6,8 @@ import { ICritterState } from "@/CritterRenderer/CritterModel";
 import { ICritterRenderer } from "@/CritterRenderer/ICritterRenderer";
 import { OutputChannelRenderTarget } from "@/CritterRenderer/OutputChannelRenderTarget";
 import { repeat } from "@/lib/repeat";
-import * as vscode from "vscode";
 
-const canvas = AsciiCanvas.create({ width: 100, height: 20 });
-
-const empty: vscode.Range[] = [];
+const canvas = AsciiCanvas.create({ width: 70, height: 16 });
 
 export class OutputChannelCritterRenderer implements ICritterRenderer {
     private readonly _renderTarget: OutputChannelRenderTarget;
@@ -23,20 +20,21 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
         canvas.clear();
 
         {
-            const x = Math.round(Math.sin(critter.heartbeats * (Math.PI / 8)) * 4);
-            const y = Math.round(Math.cos(critter.heartbeats * (Math.PI / 10) + 1) * 2);
+            const x = 3 + Math.round(Math.sin(critter.heartbeats * (Math.PI / 8)) * 7);
+            const y = Math.round(Math.cos(critter.heartbeats * (Math.PI / 10) + 1) * 2) - 6 + critter.level;
             const texture = getTextureSheet(critter)[critter.heartbeats % 2];
             canvas.draw(x + 7, y + 16, repeat("░", 15 - critter.heartbeats % 3));
             canvas.draw(x + 6, y + 17, repeat("░", 16 + critter.heartbeats % 2));
             canvas.draw(x + 7, y + 18, repeat("░", 12));
+
+            canvas.draw(0, 0, AsciiArt.CritterFrame);
+
             canvas.erase(x + 1, y + 2, texture);
             canvas.erase(x + 3, y + 2, texture);
             canvas.erase(x + 2, y + 1, texture);
             canvas.erase(x + 2, y + 3, texture);
             canvas.draw(x + 2, y + 2, texture, critter.color);
         }
-
-        canvas.draw(0, 0, AsciiArt.CritterFrame);
 
         const level = `Level: ${critter.level}`;
         const meter = renderAsciiMeter({
@@ -92,5 +90,5 @@ function getXpMeterColor(critter: ICritterState) {
 }
 
 const AsciiArt = {
-    CritterFrame: renderAsciiBox(80, 20, AsciiCanvas.Transparent),
+    CritterFrame: renderAsciiBox(70, 16, AsciiCanvas.Transparent),
 };
