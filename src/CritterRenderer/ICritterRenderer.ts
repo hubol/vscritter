@@ -1,6 +1,6 @@
-import { ICritterState } from "@/CritterRenderer/CritterModel";
+import { ICaretakerState } from "@/domain/CaretakerModel";
 import { Disposable } from "vscode";
 
 export interface ICritterRenderer extends Disposable {
-    render(state: ICritterState): void;
+    render(state: ICaretakerState): void;
 }
