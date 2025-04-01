@@ -1,11 +1,11 @@
+import { AsciiCanvas } from '@/Ascii/AsciiCanvas';
+import { AsciiCritters } from '@/Ascii/AsciiCritters';
+import { renderAsciiBox } from '@/Ascii/renderAsciiBox';
+import { renderAsciiMeter } from '@/Ascii/renderAsciiMeter';
+import { ICritterState } from '@/CritterRenderer/CritterModel';
+import { ICritterRenderer } from '@/CritterRenderer/ICritterRenderer';
+import { OutputChannelRenderTarget } from '@/CritterRenderer/OutputChannelRenderTarget';
 import * as vscode from 'vscode';
-import { ICritterRenderer } from './ICritterRenderer';
-import { ICritterState } from './CritterModel';
-import { AsciiCritters } from '../Ascii/AsciiCritters';
-import { renderAsciiMeter } from '../Ascii/renderAsciiMeter';
-import { AsciiCanvas } from '../Ascii/AsciiCanvas';
-import { renderAsciiBox } from '../Ascii/renderAsciiBox';
-import { OutputChannelRenderTarget } from './OutputChannelRenderTarget';
 
 const canvas = AsciiCanvas.create({ width: 100, height: 20 });
 

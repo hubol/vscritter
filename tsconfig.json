@@ -6,6 +6,11 @@
 			"ES2022"
 		],
 		"sourceMap": true,
+		"paths": {
+      "@/*": [
+        "./src/*"
+      ],
+		},
 		"rootDir": "src",
 		"strict": true,   /* enable all strict type-checking options */
 		/* Additional Checks */

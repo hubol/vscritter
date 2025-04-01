@@ -1,5 +1,5 @@
-import { AdjustColor } from '../lib/AdjustColor';
-import { cyclic } from '../lib/cyclic';
+import { AdjustColor } from '@/lib/AdjustColor';
+import { cyclic } from '@/lib/cyclic';
 
 export interface ICritterState {
   readonly color: number

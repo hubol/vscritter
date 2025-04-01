@@ -1,6 +1,6 @@
+import { ColorGrid } from '@/Ascii/AsciiCanvas';
+import { EditorDecorationsFromColorGrid, convertColorGridToEditorDecorations, getAllDecorationTypes } from '@/Ascii/convertColorGridToEditorDecorations';
 import * as vscode from 'vscode';
-import { Color, ColorGrid } from '../Ascii/AsciiCanvas';
-import { convertColorGridToEditorDecorations, EditorDecorationsFromColorGrid, getAllDecorationTypes } from '../Ascii/convertColorGridToEditorDecorations';
 
 export class OutputChannelRenderTarget implements vscode.Disposable {
   private readonly _outputChannel: vscode.OutputChannel;
