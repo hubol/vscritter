@@ -47,17 +47,51 @@
 
   setInterval(updateAllTableCellElements, 1000);
 
-  globalThis.flipText = function flipText(text) {
+  function flipCharacter(char) {
+    switch (char) {
+      case '▖':
+        return '▗';
+      case '▗':
+        return '▖';
+      case '▝':
+        return '▘';
+      case '▘':
+        return '▝';
+      case '▜':
+        return '▛';
+      case '▛':
+        return '▜';
+      case '▙':
+        return '▟';
+      case '▟':
+        return '▙';
+      default:
+        return char;
+    }
+  }
+
+  function flipText(text) {
     return text
       .split('\n')
       .map(line => line.replaceAll('\r', ''))
       .map(line => {
         let result = '';
         for (let i = 0; i < line.length; i++) {
-          result = line.charAt(i) + result;
+          result = flipCharacter(line.charAt(i)) + result;
         }
         return result;
       })
       .join('\n');
   }
+
+  document.addEventListener('keyup', (ev) => {
+    if (ev.code === 'KeyF') {
+      const textArea = document.querySelector('textarea.edittext');
+      if (!textArea) {
+        return;
+      }
+
+      textArea.value = flipText(textArea.value);
+    }
+  });
 })()
