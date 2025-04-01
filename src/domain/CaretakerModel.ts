@@ -87,6 +87,7 @@ export class CaretakerModel implements ICaretakerModel {
         this._records = data.records;
         this._session = data.session;
     }
+
     getState(): ICaretakerState {
         return {
             records: this._records,
