@@ -1,6 +1,7 @@
-import { AsciiCanvas } from "./AsciiCanvas";
+import { AsciiCanvas } from "@/Ascii/AsciiCanvas";
+import { repeat } from "@/lib/repeat";
 
-export function renderAsciiBox(width: number, height: number) {
+export function renderAsciiBox(width: number, height: number, fillCharacter: string) {
     const canvas = AsciiCanvas.create({ width, height });
     canvas.draw(0, 0, "╔");
     canvas.draw(width - 1, 0, "╗");
@@ -12,8 +13,11 @@ export function renderAsciiBox(width: number, height: number) {
         canvas.draw(x, height - 1, "═");
     }
 
+    const fillRow = repeat(fillCharacter, width - 1);
+
     for (let y = 1; y < height - 1; y++) {
         canvas.draw(0, y, "║");
+        canvas.draw(1, y, fillRow);
         canvas.draw(width - 1, y, "║");
     }
 

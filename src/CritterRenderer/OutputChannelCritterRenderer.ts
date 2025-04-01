@@ -77,5 +77,5 @@ function getXpMeterColor(critter: ICritterState) {
 }
 
 const AsciiArt = {
-    CritterFrame: renderAsciiBox(28, 20).text,
+    CritterFrame: renderAsciiBox(28, 20, "░").text,
 };
