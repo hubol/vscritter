@@ -1,7 +1,7 @@
-import { OutputChannelCritterRenderer } from "@/CritterRenderer/OutputChannelCritterRenderer";
 import { CaretakerModel, getDefaultCaretakerData } from "@/domain/CaretakerModel";
 import { DisposableInterval } from "@/lib/DisposableInterval";
 import { CaretakerPersistence } from "@/persistence/CaretakerPersistence";
+import { OutputChannelCritterRenderer } from "@/renderer/OutputChannelCritterRenderer";
 import * as vscode from "vscode";
 
 // This method is called when your extension is activated

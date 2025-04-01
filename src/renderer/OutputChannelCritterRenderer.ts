@@ -2,11 +2,11 @@ import { AsciiCanvas } from "@/Ascii/AsciiCanvas";
 import { AsciiCritters } from "@/Ascii/AsciiCritters";
 import { renderAsciiBox } from "@/Ascii/renderAsciiBox";
 import { renderAsciiMeter } from "@/Ascii/renderAsciiMeter";
-import { ICritterRenderer } from "@/CritterRenderer/ICritterRenderer";
-import { OutputChannelRenderTarget } from "@/CritterRenderer/OutputChannelRenderTarget";
 import { ICaretakerState } from "@/domain/CaretakerModel";
 import { ICritterData } from "@/domain/CritterModel";
 import { repeat } from "@/lib/repeat";
+import { ICritterRenderer } from "@/renderer/ICritterRenderer";
+import { OutputChannelRenderTarget } from "@/renderer/OutputChannelRenderTarget";
 
 const canvas = AsciiCanvas.create({ width: 70, height: 16 });
 
