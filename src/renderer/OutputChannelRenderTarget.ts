@@ -1,4 +1,5 @@
 import { DisposableInterval, DisposableIntervalCallback } from "@/lib/DisposableInterval";
+import { textEditorLooksLikeExtensionOutput } from "@/lib/textEditorLooksLikeExtensionOutput";
 import { ColorGrid } from "@/renderer/ascii/AsciiCanvas";
 import { convertColorGridToEditorDecorations, EditorDecorationsFromColorGrid, getAllDecorationTypes } from "@/renderer/ascii/convertColorGridToEditorDecorations";
 import * as vscode from "vscode";
@@ -43,7 +44,7 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
 
 function findVisibleTextEditorForOutputChannel(name: string) {
     const textEditor = vscode.window.visibleTextEditors.find(editor =>
-        editor?.document?.fileName.includes(name) && editor.document.fileName.includes("extension-output")
+        editor?.document?.fileName.includes(name) && textEditorLooksLikeExtensionOutput(editor)
     );
     return textEditor?.setDecorations ? textEditor : null;
 }
