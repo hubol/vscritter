@@ -1,6 +1,7 @@
 export function cyclic(value: number, min: number, max: number) {
-    while (value < min) {
+    value = (value - min) % (max - min);
+    if (value < 0) {
         value += max - min;
     }
-    return value > max ? (min + value % (max - min)) : value;
+    return value + min;
 }
