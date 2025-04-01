@@ -71,7 +71,7 @@ const decorationTypesCache: Record<number, vscode.TextEditorDecorationType> = {}
 
 function toHexColorString(rgbInteger: number) {
     const hex = "000000" + rgbInteger.toString(16);
-    return "#" + hex.substring(6);
+    return "#" + hex.substring(hex.length - 6);
 }
 
 export function getAllDecorationTypes() {
