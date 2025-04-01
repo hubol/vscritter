@@ -12,7 +12,7 @@ export class DisposableInterval implements Disposable {
         this._delay = delay;
     }
 
-    start() {
+    request() {
         if (this._timeoutToDispose) {
             return;
         }

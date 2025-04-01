@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
         model.heartbeat();
         render();
     }, 1000);
-    interval.start();
+    interval.request();
 
     // TODO layer pls
     const changeListener = vscode.workspace.onDidChangeTextDocument((e) => {

@@ -23,7 +23,7 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         const decorations = convertColorGridToEditorDecorations(colors);
         this._textToCompareOnInterval = text;
         this._decorationsToApplyOnInterval = decorations;
-        this._applyDecorationsInterval.start();
+        this._applyDecorationsInterval.request();
     }
 
     dispose() {
