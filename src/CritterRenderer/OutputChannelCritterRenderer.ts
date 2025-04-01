@@ -49,11 +49,11 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
 
         if (critters.length > 1) {
             const crittersText = `Critters: ${critters.length}`;
-            canvas.draw(38, 6, crittersText);
+            canvas.draw(38, 8, crittersText);
             let x = 0;
             let y = 0;
             for (let i = 1; i < critters.length; i++) {
-                drawCritterTiny(critters[i], 38 + x, 7 + y);
+                drawCritterTiny(critters[i], 38 + x, 9 + y);
                 x += 1;
                 if (x >= 24) {
                     x = 0;
@@ -76,8 +76,11 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
 }
 
 function drawCritterBack(critter: ICritterData, x: number, y: number) {
-    const textureSheet = getTextureSheet(critter);
-    const texture = textureSheet[critter.heartbeats % textureSheet.length];
+    canvas.draw(x + 7, y + 16, repeat("░", 15 - critter.heartbeats % 3));
+    canvas.draw(x + 6, y + 17, repeat("░", 16 + critter.heartbeats % 2));
+    canvas.draw(x + 7, y + 18, repeat("░", 12));
+
+    const texture = getTexture(critter);
     canvas.erase(x + 1, y + 2, texture);
     canvas.erase(x + 3, y + 2, texture);
     canvas.erase(x + 2, y + 1, texture);
@@ -86,8 +89,7 @@ function drawCritterBack(critter: ICritterData, x: number, y: number) {
 }
 
 function drawCritterFront(critter: ICritterData, x: number, y: number) {
-    const textureSheet = getTextureSheet(critter);
-    const texture = textureSheet[critter.heartbeats % textureSheet.length];
+    const texture = getTexture(critter);
     canvas.erase(x + 1, y + 2, texture);
     canvas.erase(x + 3, y + 2, texture);
     canvas.erase(x + 2, y + 1, texture);
@@ -108,15 +110,22 @@ function drawCritterTiny(critter: ICritterData, x: number, y: number) {
     canvas.draw(x, y, text, critter.color);
 }
 
-function getTextureSheet(critter: ICritterData) {
+function getTextureGrid(critter: ICritterData) {
     switch (critter.age) {
         case "baby":
             return AsciiCritters.Babies;
         case "child":
             return AsciiCritters.Children;
         default:
-            return AsciiCritters.Adults.Style1;
+            return AsciiCritters.Adults;
     }
+}
+
+function getTexture(critter: ICritterData) {
+    const grid = getTextureGrid(critter);
+    const strip = grid[critter.style % grid.length];
+
+    return strip[critter.heartbeats % strip.length];
 }
 
 function getXpMeterColor(critter: ICaretakerState) {

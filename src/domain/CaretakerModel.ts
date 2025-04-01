@@ -80,7 +80,7 @@ export class CaretakerModel implements ICaretakerModel {
     private readonly _session: ICaretakerData["session"];
 
     private get _experienceMaximum() {
-        return 1 * Math.pow(2, this._session.level - 1);
+        return Math.round(10 * Math.pow(1.2, this._session.level - 1));
     }
 
     private constructor(data: ICaretakerData) {
