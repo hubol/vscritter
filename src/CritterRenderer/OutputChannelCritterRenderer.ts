@@ -22,7 +22,8 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
         {
             const x = 3 + Math.round(Math.sin(critter.heartbeats * (Math.PI / 8)) * 7);
             const y = Math.round(Math.cos(critter.heartbeats * (Math.PI / 10) + 1) * 2) - 6 + critter.level;
-            const texture = getTextureSheet(critter)[critter.heartbeats % 2];
+            const textureSheet = getTextureSheet(critter);
+            const texture = textureSheet[critter.heartbeats % textureSheet.length];
             canvas.draw(x + 7, y + 16, repeat("░", 15 - critter.heartbeats % 3));
             canvas.draw(x + 6, y + 17, repeat("░", 16 + critter.heartbeats % 2));
             canvas.draw(x + 7, y + 18, repeat("░", 12));
@@ -68,7 +69,7 @@ function getTextureSheet(critter: ICritterState) {
         case 2:
             return AsciiCritters.Children;
         default:
-            return AsciiCritters.Adults;
+            return AsciiCritters.Adults.Style1;
     }
 }
 
