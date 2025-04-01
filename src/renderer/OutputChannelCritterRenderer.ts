@@ -1,10 +1,10 @@
-import { AsciiCanvas } from "@/Ascii/AsciiCanvas";
-import { AsciiCritters } from "@/Ascii/AsciiCritters";
-import { renderAsciiBox } from "@/Ascii/renderAsciiBox";
-import { renderAsciiMeter } from "@/Ascii/renderAsciiMeter";
 import { ICaretakerState } from "@/domain/CaretakerModel";
 import { ICritterData } from "@/domain/CritterModel";
 import { repeat } from "@/lib/repeat";
+import { AsciiCanvas } from "@/renderer/ascii/AsciiCanvas";
+import { AsciiCritters } from "@/renderer/ascii/AsciiCritters";
+import { renderAsciiBox } from "@/renderer/ascii/renderAsciiBox";
+import { renderAsciiMeter } from "@/renderer/ascii/renderAsciiMeter";
 import { ICritterRenderer } from "@/renderer/ICritterRenderer";
 import { OutputChannelRenderTarget } from "@/renderer/OutputChannelRenderTarget";
 

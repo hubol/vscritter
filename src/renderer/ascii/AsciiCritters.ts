@@ -1,7 +1,7 @@
 // 24 x 16
 // https://kirilllive.github.io/ASCII_Art_Paint/ascii_paint.html
 
-import { AsciiCanvas } from "@/Ascii/AsciiCanvas";
+import { AsciiCanvas } from "@/renderer/ascii/AsciiCanvas";
 
 const Babies = [
     `________________________

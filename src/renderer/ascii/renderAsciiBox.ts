@@ -1,5 +1,5 @@
-import { AsciiCanvas } from "@/Ascii/AsciiCanvas";
 import { repeat } from "@/lib/repeat";
+import { AsciiCanvas } from "@/renderer/ascii/AsciiCanvas";
 
 export function renderAsciiBox(width: number, height: number, fillCharacter: string) {
     const canvas = AsciiCanvas.create({ width, height });

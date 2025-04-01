@@ -1,6 +1,6 @@
-import { ColorGrid } from "@/Ascii/AsciiCanvas";
-import { convertColorGridToEditorDecorations, EditorDecorationsFromColorGrid, getAllDecorationTypes } from "@/Ascii/convertColorGridToEditorDecorations";
 import { DisposableInterval, DisposableIntervalCallback } from "@/lib/DisposableInterval";
+import { ColorGrid } from "@/renderer/ascii/AsciiCanvas";
+import { convertColorGridToEditorDecorations, EditorDecorationsFromColorGrid, getAllDecorationTypes } from "@/renderer/ascii/convertColorGridToEditorDecorations";
 import * as vscode from "vscode";
 
 export class OutputChannelRenderTarget implements vscode.Disposable {

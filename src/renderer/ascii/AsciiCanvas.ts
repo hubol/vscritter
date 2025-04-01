@@ -1,6 +1,3 @@
-import { repeat } from "../lib/repeat";
-import { convertColorGridToEditorDecorations } from "./convertColorGridToEditorDecorations";
-
 interface DrawCommand {
     x: number;
     y: number;

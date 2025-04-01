@@ -1,4 +1,4 @@
-import { repeat } from "../lib/repeat";
+import { repeat } from "@/lib/repeat";
 
 interface RenderAsciiMeterArgs {
     value: number;
