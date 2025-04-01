@@ -1,12 +1,10 @@
 import * as vscode from 'vscode';
 import { ICritterRenderer } from './ICritterRenderer';
 import { ICritterState } from './CritterModel';
-import { AsciiColumns } from '../Ascii/AsciiColumns';
 import { AsciiCritters } from '../Ascii/AsciiCritters';
 import { renderAsciiMeter } from '../Ascii/renderAsciiMeter';
 import { AsciiCanvas } from '../Ascii/AsciiCanvas';
 import { renderAsciiBox } from '../Ascii/renderAsciiBox';
-import { getAllDecorationTypes } from '../Ascii/convertColorGridToEditorDecorations';
 import { OutputChannelRenderTarget } from './OutputChannelRenderTarget';
 
 const canvas = AsciiCanvas.create({ width: 100, height: 20 });
