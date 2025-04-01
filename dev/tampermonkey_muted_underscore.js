@@ -46,4 +46,18 @@
   }
 
   setInterval(updateAllTableCellElements, 1000);
+
+  globalThis.flipText = function flipText(text) {
+    return text
+      .split('\n')
+      .map(line => line.replaceAll('\r', ''))
+      .map(line => {
+        let result = '';
+        for (let i = 0; i < line.length; i++) {
+          result = line.charAt(i) + result;
+        }
+        return result;
+      })
+      .join('\n');
+  }
 })()
