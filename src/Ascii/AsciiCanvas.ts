@@ -53,21 +53,21 @@ export class AsciiCanvas {
         let xStart = x;
 
         for (let i = 0; i < text.length; i++) {
+            if (y >= this.height) {
+                break;
+            }
+
             const char = text.charAt(i);
             if (char === "\n") {
                 x = xStart;
                 y += 1;
             }
-            else if (char !== "\r" && x < this.width) {
-                if (char !== AsciiCanvas.Transparent) {
+            else if (char !== "\r") {
+                if (char !== AsciiCanvas.Transparent && x >= 0 && x < this.width && y >= 0) {
                     this._chars[y][x] = char;
                     this._colors[y][x] = color;
                 }
                 x += 1;
-            }
-
-            if (y >= this.height) {
-                break;
             }
         }
     }
@@ -76,20 +76,20 @@ export class AsciiCanvas {
         let xStart = x;
 
         for (let i = 0; i < text.length; i++) {
+            if (y >= this.height) {
+                break;
+            }
+
             const char = text.charAt(i);
             if (char === "\n") {
                 x = xStart;
                 y += 1;
             }
-            else if (char !== "\r" && x < this.width) {
-                if (char !== AsciiCanvas.Transparent) {
+            else if (char !== "\r") {
+                if (char !== AsciiCanvas.Transparent && x >= 0 && x < this.width && y >= 0) {
                     this._chars[y][x] = " ";
                 }
                 x += 1;
-            }
-
-            if (y >= this.height) {
-                break;
             }
         }
     }
