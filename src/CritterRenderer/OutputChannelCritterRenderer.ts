@@ -24,15 +24,16 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
 
         {
             const x = Math.round(Math.sin(critter.heartbeats * (Math.PI / 8)) * 4);
+            const y = Math.round(Math.cos(critter.heartbeats * (Math.PI / 10) + 1) * 2);
             const texture = getTextureSheet(critter)[critter.heartbeats % 2];
-            canvas.draw(x + 7, 16, repeat("░", 15 - critter.heartbeats % 3));
-            canvas.draw(x + 6, 17, repeat("░", 16 + critter.heartbeats % 2));
-            canvas.draw(x + 7, 18, repeat("░", 12));
-            canvas.erase(x + 1, 2, texture);
-            canvas.erase(x + 3, 2, texture);
-            canvas.erase(x + 2, 1, texture);
-            canvas.erase(x + 2, 3, texture);
-            canvas.draw(x + 2, 2, texture, critter.color);
+            canvas.draw(x + 7, y + 16, repeat("░", 15 - critter.heartbeats % 3));
+            canvas.draw(x + 6, y + 17, repeat("░", 16 + critter.heartbeats % 2));
+            canvas.draw(x + 7, y + 18, repeat("░", 12));
+            canvas.erase(x + 1, y + 2, texture);
+            canvas.erase(x + 3, y + 2, texture);
+            canvas.erase(x + 2, y + 1, texture);
+            canvas.erase(x + 2, y + 3, texture);
+            canvas.draw(x + 2, y + 2, texture, critter.color);
         }
 
         canvas.draw(0, 0, AsciiArt.CritterFrame);
