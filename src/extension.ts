@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}, 1000);
 
 	// TODO layer pls
-	vscode.workspace.onDidChangeTextDocument((e) => {
+	const changeListener = vscode.workspace.onDidChangeTextDocument((e) => {
 		if (vscode.window.activeTextEditor && e.document === vscode.window.activeTextEditor.document) {
 				model.gainExperience(1);
 				critterRenderer.render(model);
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	critterRenderer.render(model);
 
-	context.subscriptions.push(critterRenderer);
+	context.subscriptions.push(critterRenderer, changeListener);
 }
 
 // This method is called when your extension is deactivated
