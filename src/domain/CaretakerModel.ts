@@ -6,6 +6,7 @@ import { z } from "zod";
 
 export interface ICaretakerData {
     records: {
+        // TODO Use these values :-)
         experienceTotal: number;
         crittersRaisedToAdulthood: number;
     };
@@ -13,6 +14,7 @@ export interface ICaretakerData {
         critters: ICritterData[];
         experience: number;
         level: number;
+        // TODO use this!
         startDate: Date;
     };
 }
