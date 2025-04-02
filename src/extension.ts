@@ -4,8 +4,6 @@ import { CaretakerPersistence } from "@/persistence/CaretakerPersistence";
 import { OutputChannelCritterRenderer } from "@/renderer/OutputChannelCritterRenderer";
 import * as vscode from "vscode";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
     const persistence = new CaretakerPersistence(context);
     const data = persistence.read() ?? getDefaultCaretakerData();
@@ -32,5 +30,4 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(critterRenderer, changeListener);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
