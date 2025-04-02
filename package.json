@@ -19,7 +19,51 @@
         "command": "vscritter.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "icons": {
+      "critter-baby-0": {
+        "description": "Baby critter",
+        "default": {
+          "fontPath": "critter-icons.woff",
+          "fontCharacter": "\\7D2"
+        }
+      },
+      "critter-baby-1": {
+        "description": "Baby critter",
+        "default": {
+          "fontPath": "critter-icons.woff",
+          "fontCharacter": "\\7D3"
+        }
+      },
+      "critter-child-0": {
+        "description": "Child critter",
+        "default": {
+          "fontPath": "critter-icons.woff",
+          "fontCharacter": "\\7D4"
+        }
+      },
+      "critter-child-1": {
+        "description": "Child critter",
+        "default": {
+          "fontPath": "critter-icons.woff",
+          "fontCharacter": "\\7D5"
+        }
+      },
+      "critter-adult-0": {
+        "description": "Adult critter",
+        "default": {
+          "fontPath": "critter-icons.woff",
+          "fontCharacter": "\\7D0"
+        }
+      },
+      "critter-adult-1": {
+        "description": "Adult critter",
+        "default": {
+          "fontPath": "critter-icons.woff",
+          "fontCharacter": "\\7D1"
+        }
+      }
+    }
   },
   "scripts": {
     "generate:icons": "node ./assets/icons/index.mjs",

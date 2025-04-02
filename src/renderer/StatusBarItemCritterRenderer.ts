@@ -11,9 +11,11 @@ export class StatusBarItemCritterRenderer implements ICritterRenderer, vscode.Di
     }
 
     render(state: ICaretakerState): void {
-        this._statusBarItem.text =
-            `$(megaphone) Level: ${state.session.level} (XP: ${state.session.experience} / ${state.session.experienceMaximum})`;
-        this._statusBarItem.color = rgbIntegerToHexColorString(state.session.critters[0].color);
+        const critter = state.session.critters[0];
+        this._statusBarItem.text = `$(critter-${critter.age}-${
+            critter.heartbeats % 2
+        }) Level: ${state.session.level} (XP: ${state.session.experience} / ${state.session.experienceMaximum})`;
+        this._statusBarItem.color = rgbIntegerToHexColorString(critter.color);
         this._statusBarItem.show();
     }
 
