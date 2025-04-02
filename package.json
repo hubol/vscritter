@@ -16,8 +16,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "vscritter.helloWorld",
-        "title": "Hello World"
+        "command": "vscritter.show",
+        "title": "critter: Show Critter"
       }
     ],
     "icons": {

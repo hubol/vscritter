@@ -11,10 +11,10 @@ import { OutputChannelRenderTarget } from "@/renderer/OutputChannelRenderTarget"
 const canvas = AsciiCanvas.create({ width: 70, height: 16 });
 
 export class OutputChannelCritterRenderer implements ICritterRenderer {
-    private readonly _renderTarget: OutputChannelRenderTarget;
+    private readonly _outputChannelRenderer: OutputChannelRenderTarget;
 
     private constructor() {
-        this._renderTarget = new OutputChannelRenderTarget("vscritter");
+        this._outputChannelRenderer = new OutputChannelRenderTarget("vscritter");
     }
 
     render(caretaker: ICaretakerState) {
@@ -63,14 +63,18 @@ export class OutputChannelCritterRenderer implements ICritterRenderer {
         }
 
         const { text, colors } = canvas.render();
-        this._renderTarget.fill(text, colors);
+        this._outputChannelRenderer.fill(text, colors);
+    }
+
+    showOutputChannel() {
+        this._outputChannelRenderer.show();
     }
 
     dispose() {
-        this._renderTarget.dispose();
+        this._outputChannelRenderer.dispose();
     }
 
-    static create(): ICritterRenderer {
+    static create() {
         return new OutputChannelCritterRenderer();
     }
 }

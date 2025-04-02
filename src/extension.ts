@@ -38,6 +38,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    vscode.commands.registerCommand("vscritter.show", () => {
+        outputChannelRenderer.showOutputChannel();
+    });
+
     heartbeatInterval.request();
     renderAll();
 

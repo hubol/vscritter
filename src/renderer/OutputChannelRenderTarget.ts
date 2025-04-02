@@ -36,6 +36,10 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         }
     }
 
+    show() {
+        this._outputChannel.show(true);
+    }
+
     private _setTextAndDecorationsOnThrottleResolve() {
         this._throttleTimeout = null;
         if (this._setOnThrottleResolve) {
