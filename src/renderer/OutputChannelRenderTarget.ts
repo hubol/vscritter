@@ -19,6 +19,10 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
     }
 
     fill(text: string, colors: ColorGrid) {
+        if (!vscode.window.state.focused || !vscode.window.state.active) {
+            return;
+        }
+
         text = normalizeLineEndings(text);
         // .replace() appears to be asynchronous
         // Checking the TextEditor's contents will not immediately reflect this call
@@ -38,11 +42,24 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         this._applyDecorationsInterval.dispose();
     }
 
-    private readonly _tryToApplyDecorations: DisposableIntervalCallback = (clearInterval) => {
+    private readonly _tryToApplyDecorations: DisposableIntervalCallback = () => {
+        if (this._textToCompareOnInterval === null) {
+            return;
+        }
         const textEditor = findVisibleTextEditorForOutputChannel(this.name);
         if (textEditor && normalizeLineEndings(textEditor.document.getText()) === this._textToCompareOnInterval) {
-            applyDecorationsToTextEditor(textEditor, this._decorationsToApplyOnInterval!);
-            clearInterval();
+            try {
+                // Even after our fantastic hacks,
+                // VSCode still sometimes throws here
+                // Relevant lines:
+                // https://github.com/microsoft/vscode/blob/4f39e1da783d187b0a83e7d427748037210ea6c5/src/vs/workbench/api/browser/mainThreadEditors.ts#L304-L322
+                // https://github.com/microsoft/vscode/blob/ed13a9538d3c5f872d43bf96a5429a7439eea835/src/vs/workbench/api/common/extHostTextEditor.ts#L540-L562
+                applyDecorationsToTextEditor(textEditor, this._decorationsToApplyOnInterval!);
+            }
+            catch (_) {
+                return;
+            }
+            this._textToCompareOnInterval = null;
         }
     };
 }
