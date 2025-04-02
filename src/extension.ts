@@ -1,3 +1,4 @@
+import { CritterCommands } from "@/CritterCommands";
 import { CaretakerModel, getDefaultCaretakerData } from "@/domain/CaretakerModel";
 import { DisposableInterval } from "@/lib/DisposableInterval";
 import { textEditorLooksLikeExtensionOutput } from "@/lib/textEditorLooksLikeExtensionOutput";
@@ -38,12 +39,12 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    vscode.commands.registerCommand("vscritter.show", () => {
+    vscode.commands.registerCommand(CritterCommands.Show, () => {
         outputChannelRenderer.showOutputChannel();
         renderAll();
     });
 
-    vscode.commands.registerCommand("vscritter.reset", async () => {
+    vscode.commands.registerCommand(CritterCommands.Reset, async () => {
         const result = await vscode.window.showInformationMessage(
             "Are you sure that you want to reset your vscritter data?",
             "Yes",

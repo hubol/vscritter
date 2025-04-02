@@ -1,3 +1,4 @@
+import { CritterCommands } from "@/CritterCommands";
 import { ICaretakerState } from "@/domain/CaretakerModel";
 import { rgbIntegerToHexColorString } from "@/lib/rgbIntegerToHexColorString";
 import { ICritterRenderer } from "@/renderer/ICritterRenderer";
@@ -8,6 +9,8 @@ export class StatusBarItemCritterRenderer implements ICritterRenderer, vscode.Di
 
     private constructor() {
         this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        this._statusBarItem.command = CritterCommands.Show;
+        this._statusBarItem.tooltip = "Show Critter";
     }
 
     render(state: ICaretakerState): void {
