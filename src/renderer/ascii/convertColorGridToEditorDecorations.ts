@@ -1,3 +1,4 @@
+import { rgbIntegerToHexColorString } from "@/lib/rgbIntegerToHexColorString";
 import * as vscode from "vscode";
 import { Color, ColorGrid } from "./AsciiCanvas";
 
@@ -60,7 +61,9 @@ function getPosition(x: number, y: number) {
 
 function getDecorationType(color: number) {
     if (!decorationTypesCache[color]) {
-        decorationTypesCache[color] = vscode.window.createTextEditorDecorationType({ color: toHexColorString(color) });
+        decorationTypesCache[color] = vscode.window.createTextEditorDecorationType({
+            color: rgbIntegerToHexColorString(color),
+        });
     }
 
     return decorationTypesCache[color];
@@ -68,11 +71,6 @@ function getDecorationType(color: number) {
 
 const positionsCache: vscode.Position[][] = [];
 const decorationTypesCache: Record<number, vscode.TextEditorDecorationType> = {};
-
-function toHexColorString(rgbInteger: number) {
-    const hex = "000000" + rgbInteger.toString(16);
-    return "#" + hex.substring(hex.length - 6);
-}
 
 export function getAllDecorationTypes() {
     return Object.values(decorationTypesCache);
