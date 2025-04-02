@@ -10,6 +10,9 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
     private _textToCompareOnInterval: string | null = null;
     private _decorationsToApplyOnInterval: EditorDecorationsFromColorGrid | null = null;
 
+    private _setOnThrottleResolve: { text: string; decorations: EditorDecorationsFromColorGrid } | null = null;
+    private _throttleTimeout: NodeJS.Timeout | null = null;
+
     readonly name: string;
 
     constructor(name: string) {
@@ -20,6 +23,29 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
 
     fill(text: string, colors: ColorGrid) {
         text = normalizeLineEndings(text);
+        const decorations = convertColorGridToEditorDecorations(colors);
+
+        // Throttled because CPU use from dangling listeners is insane
+        // See below
+        if (this._throttleTimeout) {
+            this._setOnThrottleResolve = { text, decorations };
+        }
+        else {
+            this._setTextAndDecorations(text, decorations);
+            this._throttleTimeout = setTimeout(this._setTextAndDecorationsOnThrottleResolve.bind(this), 200);
+        }
+    }
+
+    private _setTextAndDecorationsOnThrottleResolve() {
+        this._throttleTimeout = null;
+        if (this._setOnThrottleResolve) {
+            const { text, decorations } = this._setOnThrottleResolve;
+            this._setOnThrottleResolve = null;
+            this._setTextAndDecorations(text, decorations);
+        }
+    }
+
+    private _setTextAndDecorations(text: string, decorations: EditorDecorationsFromColorGrid) {
         // .replace() appears to be asynchronous
         // Checking the TextEditor's contents will not immediately reflect this call
         // So we store the text to compare and set an interval to see when our text was applied :-)
@@ -55,8 +81,6 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         // export function deactivate() {}
 
         this._outputChannel.replace(text);
-
-        const decorations = convertColorGridToEditorDecorations(colors);
         this._textToCompareOnInterval = text;
         this._decorationsToApplyOnInterval = decorations;
         this._applyDecorationsInterval.request();
