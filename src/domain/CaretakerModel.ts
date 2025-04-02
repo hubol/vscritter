@@ -27,6 +27,7 @@ export interface ICaretakerState {
 interface ICaretakerModel {
     gainExperienceFromActivity(activity: ProgrammerActivity): void;
     heartbeat(): void;
+    reset(): void;
 
     getData(): ICaretakerData;
     getState(): ICaretakerState;
@@ -77,8 +78,8 @@ const caretakerDataSchema = z.object({
 });
 
 export class CaretakerModel implements ICaretakerModel {
-    private readonly _records: ICaretakerData["records"];
-    private readonly _session: ICaretakerData["session"];
+    private _records: ICaretakerData["records"];
+    private _session: ICaretakerData["session"];
 
     private get _experienceMaximum() {
         return Math.round(10 * Math.pow(1.2, this._session.level - 1));
@@ -137,6 +138,12 @@ export class CaretakerModel implements ICaretakerModel {
         for (const critter of this._session.critters) {
             critter.heartbeats += 1;
         }
+    }
+
+    reset() {
+        const data = getDefaultCaretakerData();
+        this._records = data.records;
+        this._session = data.session;
     }
 
     static create(unparsedData: ICaretakerData): ICaretakerModel {

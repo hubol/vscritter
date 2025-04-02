@@ -17,7 +17,11 @@
     "commands": [
       {
         "command": "vscritter.show",
-        "title": "critter: Show Critter"
+        "title": "vscritter: Show Critter"
+      },
+      {
+        "command": "vscritter.reset",
+        "title": "vscritter: Reset Critter Data"
       }
     ],
     "icons": {

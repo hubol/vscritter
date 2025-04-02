@@ -42,6 +42,18 @@ export function activate(context: vscode.ExtensionContext) {
         outputChannelRenderer.showOutputChannel();
     });
 
+    vscode.commands.registerCommand("vscritter.reset", async () => {
+        const result = await vscode.window.showInformationMessage(
+            "Are you sure that you want to reset your vscritter data?",
+            "Yes",
+            "No",
+        );
+        if (result === "Yes") {
+            model.reset();
+            renderAll();
+        }
+    });
+
     heartbeatInterval.request();
     renderAll();
 
