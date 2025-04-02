@@ -21,6 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
             && e.document === vscode.window.activeTextEditor.document
         ) {
             model.gainExperienceFromActivity("code_change");
+            persistence.write(model.getData());
             render();
         }
     });

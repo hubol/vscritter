@@ -27,6 +27,7 @@ export interface ICaretakerState {
 interface ICaretakerModel {
     gainExperienceFromActivity(activity: ProgrammerActivity): void;
 
+    getData(): ICaretakerData;
     getState(): ICaretakerState;
 }
 
@@ -70,7 +71,7 @@ const caretakerDataSchema = z.object({
         experience: z.number().int().min(0),
         critters: z.array(critterDataSchema).min(1),
         level: z.number().int().min(1),
-        startDate: z.date(),
+        startDate: z.coerce.date(),
     }),
 });
 
@@ -85,6 +86,13 @@ export class CaretakerModel implements ICaretakerModel {
     private constructor(data: ICaretakerData) {
         this._records = data.records;
         this._session = data.session;
+    }
+
+    getData(): ICaretakerData {
+        return {
+            records: this._records,
+            session: this._session,
+        };
     }
 
     getState(): ICaretakerState {
