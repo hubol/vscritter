@@ -26,6 +26,7 @@ export interface ICaretakerState {
 
 interface ICaretakerModel {
     gainExperienceFromActivity(activity: ProgrammerActivity): void;
+    heartbeat(): void;
 
     getData(): ICaretakerData;
     getState(): ICaretakerState;
@@ -115,12 +116,6 @@ export class CaretakerModel implements ICaretakerModel {
         this._session.experience += experienceEarned;
         this._records.experienceTotal += experienceEarned;
 
-        if (this._records.experienceTotal % 3 === 0) {
-            for (const critter of this._session.critters) {
-                critter.heartbeats += 1;
-            }
-        }
-
         while (this._session.experience >= this._experienceMaximum) {
             const critterToMature = this._session.critters.find(critter => critter.age !== "adult");
             if (critterToMature) {
@@ -135,6 +130,12 @@ export class CaretakerModel implements ICaretakerModel {
             this._session.experience -= this._experienceMaximum;
             this._session.level += 1;
             levelsIncreased += 1;
+        }
+    }
+
+    heartbeat() {
+        for (const critter of this._session.critters) {
+            critter.heartbeats += 1;
         }
     }
 

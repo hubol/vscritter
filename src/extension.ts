@@ -1,4 +1,5 @@
 import { CaretakerModel, getDefaultCaretakerData } from "@/domain/CaretakerModel";
+import { DisposableInterval } from "@/lib/DisposableInterval";
 import { textEditorLooksLikeExtensionOutput } from "@/lib/textEditorLooksLikeExtensionOutput";
 import { CaretakerPersistence } from "@/persistence/CaretakerPersistence";
 import { OutputChannelCritterRenderer } from "@/renderer/OutputChannelCritterRenderer";
@@ -13,11 +14,16 @@ export function activate(context: vscode.ExtensionContext) {
     const statusBarItemRenderer = StatusBarItemCritterRenderer.create();
 
     const model = CaretakerModel.create(data);
-    const render = () => {
+    const renderAll = () => {
         const state = model.getState();
         outputChannelRenderer.render(state);
         statusBarItemRenderer.render(state);
     };
+
+    const heartbeatInterval = new DisposableInterval(() => {
+        model.heartbeat();
+        statusBarItemRenderer.render(model.getState());
+    }, 1000);
 
     // TODO layer pls
     const changeListener = vscode.workspace.onDidChangeTextDocument((e) => {
@@ -28,13 +34,19 @@ export function activate(context: vscode.ExtensionContext) {
         ) {
             model.gainExperienceFromActivity("code_change");
             persistence.write(model.getData());
-            render();
+            renderAll();
         }
     });
 
-    render();
+    heartbeatInterval.request();
+    renderAll();
 
-    context.subscriptions.push(outputChannelRenderer, statusBarItemRenderer, changeListener);
+    context.subscriptions.push(
+        outputChannelRenderer,
+        statusBarItemRenderer,
+        heartbeatInterval,
+        changeListener,
+    );
 }
 
 export function deactivate() {}
