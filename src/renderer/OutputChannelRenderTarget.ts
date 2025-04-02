@@ -19,6 +19,12 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
     }
 
     fill(text: string, colors: ColorGrid) {
+        text = normalizeLineEndings(text);
+        // .replace() appears to be asynchronous
+        // Checking the TextEditor's contents will not immediately reflect this call
+        // So we store the text to compare and set an interval to see when our text was applied :-)
+        // On Windows, the line endings include the awesome carriage return character
+        // Hence the normalizeLineEndings() calls
         this._outputChannel.replace(text);
 
         const decorations = convertColorGridToEditorDecorations(colors);
@@ -34,12 +40,15 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
 
     private readonly _tryToApplyDecorations: DisposableIntervalCallback = (clearInterval) => {
         const textEditor = findVisibleTextEditorForOutputChannel(this.name);
-        // Looks like you can sometimes get a textEditor that hasn't received the text yet... Interesting
-        if (textEditor && textEditor.document.getText() === this._textToCompareOnInterval) {
+        if (textEditor && normalizeLineEndings(textEditor.document.getText()) === this._textToCompareOnInterval) {
             applyDecorationsToTextEditor(textEditor, this._decorationsToApplyOnInterval!);
             clearInterval();
         }
     };
+}
+
+function normalizeLineEndings(text: string) {
+    return text.replaceAll("\r", "");
 }
 
 function findVisibleTextEditorForOutputChannel(name: string) {
