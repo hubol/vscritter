@@ -39,6 +39,21 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         // at Z0e.getContent (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2480:12384)
         // at async tCe.I (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2481:1767)
 
+        // Reproduce
+        // import * as vscode from "vscode";
+
+        // export function activate(context: vscode.ExtensionContext) {
+        //     const channel = vscode.window.createOutputChannel("vscritter");
+        //     let count = 0;
+        //     setInterval(() => {
+        //         if (count++ <= 175) {
+        //             channel.append("yoo!");
+        //         }
+        //     }, 100);
+        // }
+
+        // export function deactivate() {}
+
         this._outputChannel.replace(text);
 
         const decorations = convertColorGridToEditorDecorations(colors);
