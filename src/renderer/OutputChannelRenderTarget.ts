@@ -19,16 +19,26 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
     }
 
     fill(text: string, colors: ColorGrid) {
-        if (!vscode.window.state.focused || !vscode.window.state.active) {
-            return;
-        }
-
         text = normalizeLineEndings(text);
         // .replace() appears to be asynchronous
         // Checking the TextEditor's contents will not immediately reflect this call
         // So we store the text to compare and set an interval to see when our text was applied :-)
         // On Windows, the line endings include the awesome carriage return character
         // Hence the normalizeLineEndings() calls
+
+        // Also, all writes to OutputChannel appear to create a dangling listener...?
+        // Am I missing something?
+        // After ~175 calls to fill():
+        // 2025-04-02 10:59:17.794 [error] [701] potential listener LEAK detected, having 175 listeners already. MOST frequent listener (1):: Error
+        // at Bfi.create (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:27:11832)
+        // at hDe.q [as onDidChange] (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:29:1377)
+        // at new bf (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:248:20382)
+        // at Rgt.o (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:1346:1586)
+        // at Rgt.createInstance (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:1346:1083)
+        // at Z0e.C (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2480:12640)
+        // at Z0e.getContent (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2480:12384)
+        // at async tCe.I (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2481:1767)
+
         this._outputChannel.replace(text);
 
         const decorations = convertColorGridToEditorDecorations(colors);

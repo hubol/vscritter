@@ -1,5 +1,4 @@
 import { CaretakerModel, getDefaultCaretakerData } from "@/domain/CaretakerModel";
-import { DisposableInterval } from "@/lib/DisposableInterval";
 import { textEditorLooksLikeExtensionOutput } from "@/lib/textEditorLooksLikeExtensionOutput";
 import { CaretakerPersistence } from "@/persistence/CaretakerPersistence";
 import { OutputChannelCritterRenderer } from "@/renderer/OutputChannelCritterRenderer";
@@ -16,12 +15,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     const critterRenderer = OutputChannelCritterRenderer.create();
 
-    const interval = new DisposableInterval(() => {
-        model.heartbeat();
-        render();
-    }, 1000);
-    interval.request();
-
     // TODO layer pls
     const changeListener = vscode.workspace.onDidChangeTextDocument((e) => {
         if (
@@ -36,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     render();
 
-    context.subscriptions.push(critterRenderer, changeListener, interval);
+    context.subscriptions.push(critterRenderer, changeListener);
 }
 
 // This method is called when your extension is deactivated
