@@ -2,6 +2,8 @@
   "name": "vscritter",
   "displayName": "vscritter",
   "description": "Little guy in your IDE",
+  "publisher": "hubol",
+  "icon": "icon.png",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.90.0"
