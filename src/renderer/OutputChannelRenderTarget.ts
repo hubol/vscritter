@@ -41,7 +41,7 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
 
         // Reproduce
         // import * as vscode from "vscode";
-
+        //
         // export function activate(context: vscode.ExtensionContext) {
         //     const channel = vscode.window.createOutputChannel("vscritter");
         //     let count = 0;
@@ -51,7 +51,7 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         //         }
         //     }, 100);
         // }
-
+        //
         // export function deactivate() {}
 
         this._outputChannel.replace(text);
