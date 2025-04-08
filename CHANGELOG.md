@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.3] - 2025-04-08
+
 ### Changed
 - Only populate the Output Channel when it is visible in the editor
 
