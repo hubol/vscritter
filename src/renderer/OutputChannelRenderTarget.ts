@@ -6,50 +6,60 @@ import * as vscode from "vscode";
 
 export class OutputChannelRenderTarget implements vscode.Disposable {
     private readonly _outputChannel: vscode.OutputChannel;
-    private readonly _applyDecorationsInterval: DisposableInterval;
-    private _textToCompareOnInterval: string | null = null;
-    private _decorationsToApplyOnInterval: EditorDecorationsFromColorGrid | null = null;
 
-    private _setOnThrottleResolve: { text: string; decorations: EditorDecorationsFromColorGrid } | null = null;
-    private _throttleTimeout: NodeJS.Timeout | null = null;
+    private readonly _throttledFillInterval: DisposableInterval;
+    private _lastThrottledFillMs = -1;
+    private _fillRequest: { text: string; decorations: EditorDecorationsFromColorGrid } | null = null;
+
+    private readonly _decorateInterval: DisposableInterval;
+    private _decorateRequest: { expectedText: string; decorations: EditorDecorationsFromColorGrid } | null = null;
 
     readonly name: string;
 
     constructor(name: string) {
         this._outputChannel = vscode.window.createOutputChannel(name);
         this.name = name;
-        this._applyDecorationsInterval = new DisposableInterval(this._tryToApplyDecorations.bind(this), null);
+        this._throttledFillInterval = new DisposableInterval(this._onThrottledFill.bind(this), null);
+        this._decorateInterval = new DisposableInterval(this._onDecorate.bind(this), null);
     }
 
     fill(text: string, colors: ColorGrid) {
+        Date.now();
         text = normalizeLineEndings(text);
         const decorations = convertColorGridToEditorDecorations(colors);
 
-        // Throttled because CPU use from dangling listeners is insane
-        // See below
-        if (this._throttleTimeout) {
-            this._setOnThrottleResolve = { text, decorations };
-        }
-        else {
-            this._setTextAndDecorations(text, decorations);
-            this._throttleTimeout = setTimeout(this._setTextAndDecorationsOnThrottleResolve.bind(this), 200);
-        }
+        this._fillRequest = { text, decorations };
+        this._throttledFillInterval.request();
     }
 
     show() {
         this._outputChannel.show(true);
     }
 
-    private _setTextAndDecorationsOnThrottleResolve() {
-        this._throttleTimeout = null;
-        if (this._setOnThrottleResolve) {
-            const { text, decorations } = this._setOnThrottleResolve;
-            this._setOnThrottleResolve = null;
-            this._setTextAndDecorations(text, decorations);
-        }
+    dispose() {
+        this._outputChannel.dispose();
+        this._decorateInterval.dispose();
+        this._throttledFillInterval.dispose();
     }
 
-    private _setTextAndDecorations(text: string, decorations: EditorDecorationsFromColorGrid) {
+    private static readonly _applyTextThrottleMs = 250;
+
+    private readonly _onThrottledFill: DisposableIntervalCallback = () => {
+        if (
+            this._fillRequest === null
+            || (Date.now() - this._lastThrottledFillMs) < OutputChannelRenderTarget._applyTextThrottleMs
+        ) {
+            return;
+        }
+
+        const textEditor = findVisibleTextEditorForOutputChannel(this.name);
+        if (!textEditor) {
+            return;
+        }
+
+        const { text, decorations } = this._fillRequest;
+        this._fillRequest = null;
+
         // .replace() appears to be asynchronous
         // Checking the TextEditor's contents will not immediately reflect this call
         // So we store the text to compare and set an interval to see when our text was applied :-)
@@ -85,34 +95,32 @@ export class OutputChannelRenderTarget implements vscode.Disposable {
         // export function deactivate() {}
 
         this._outputChannel.replace(text);
-        this._textToCompareOnInterval = text;
-        this._decorationsToApplyOnInterval = decorations;
-        this._applyDecorationsInterval.request();
-    }
+        this._decorateRequest = { expectedText: text, decorations };
+        this._decorateInterval.request();
+        this._lastThrottledFillMs = Date.now();
+    };
 
-    dispose() {
-        this._outputChannel.dispose();
-        this._applyDecorationsInterval.dispose();
-    }
-
-    private readonly _tryToApplyDecorations: DisposableIntervalCallback = () => {
-        if (this._textToCompareOnInterval === null) {
+    private readonly _onDecorate: DisposableIntervalCallback = () => {
+        if (this._decorateRequest === null) {
             return;
         }
+
+        const { expectedText, decorations } = this._decorateRequest;
+
         const textEditor = findVisibleTextEditorForOutputChannel(this.name);
-        if (textEditor && normalizeLineEndings(textEditor.document.getText()) === this._textToCompareOnInterval) {
+        if (textEditor && normalizeLineEndings(textEditor.document.getText()) === expectedText) {
             try {
                 // Even after our fantastic hacks,
                 // VSCode still sometimes throws here
                 // Relevant lines:
                 // https://github.com/microsoft/vscode/blob/4f39e1da783d187b0a83e7d427748037210ea6c5/src/vs/workbench/api/browser/mainThreadEditors.ts#L304-L322
                 // https://github.com/microsoft/vscode/blob/ed13a9538d3c5f872d43bf96a5429a7439eea835/src/vs/workbench/api/common/extHostTextEditor.ts#L540-L562
-                applyDecorationsToTextEditor(textEditor, this._decorationsToApplyOnInterval!);
+                applyDecorationsToTextEditor(textEditor, decorations);
             }
             catch (_) {
                 return;
             }
-            this._textToCompareOnInterval = null;
+            this._decorateRequest = null;
         }
     };
 }
